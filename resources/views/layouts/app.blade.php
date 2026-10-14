@@ -41,5 +41,8 @@
 
         <!-- My custom JS -->
         <script src="{{ asset('js/custom-script.js') }}"></script>
+
+        {{-- Page scripts: only pages that push to the "scripts" stack add their JS here --}}
+        @stack('scripts')
     </body>
 </html>

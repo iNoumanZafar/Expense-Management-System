@@ -31,18 +31,18 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-        'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
-        'user_type' => ['required', 'in:admin,user'],
-        'password' => ['required', 'confirmed', Rules\Password::defaults()],
-    ], [
-        'email.unique' => 'This email is already registered. Try logging in.',
-    ]);
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'email.unique' => 'This email is already registered. Try logging in.',
+        ]);
 
+        // Everyone who signs up is a normal user. Admins are never created from this form.
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'user_type' => $request->user_type,
+            'user_type' => 'user',
             'password' => Hash::make($request->password),
         ]);
 
