@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -8,23 +10,48 @@ Route::get('/', function () {
 });
 
 // Dashboard link: send the user to the right dashboard
-Route::get('/dashboard', function () {
-    if (auth()->user()->user_type == 'admin') {
-        return redirect('/admin/dashboard');
-    }
+// All authenticated and verified users
+Route::middleware(['auth', 'verified'])->group(function () {
 
-    return redirect('/user/dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    // Dashboard link: send the user to the right dashboard
+    Route::get('/dashboard', function () {
+        if (auth()->user()->user_type == 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
 
-// Admin dashboard (only admin can open it)
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->middleware(['auth', 'verified', 'role:admin'])->name('admin.dashboard');
+        return redirect()->route('user.dashboard');
+    })->name('dashboard');
 
-// User dashboard (only user can open it)
-Route::get('/user/dashboard', function () {
-    return view('user.dashboard');
-})->middleware(['auth', 'verified', 'role:user'])->name('user.dashboard');
+    // User-only routes
+    Route::middleware('role:user')->prefix('user')->name('user.')->group(function () {
+        // User Dashboard
+        Route::get('/dashboard', function () {
+            return view('user.dashboard');
+        })->name('dashboard');
+    });
+
+    // Admin-only routes
+
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+        // Admin Dashboard
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
+
+        // Admin Settings
+        Route::get('/settings', [SettingController::class, 'index'])
+            ->name('settings');
+
+        Route::post('/settings', [SettingController::class, 'store'])
+            ->name('settings.store');
+
+        // Admin Categories
+        Route::get('/categories', [CategoryController::class, 'index'])
+            ->name('categories.index');
+        Route::post('/categories', [CategoryController::class, 'store'])
+            ->name('categories.store');
+    });
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

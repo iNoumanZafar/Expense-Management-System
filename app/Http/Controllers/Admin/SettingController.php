@@ -8,6 +8,14 @@ use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
+    public function index()
+    {
+        $settings = Setting::latest()->get();
+
+        return view('admin.settings', [
+            'settings' => $settings,
+        ]);
+    }
     public function store(Request $request)
     {
         $validated = $request->validate([
