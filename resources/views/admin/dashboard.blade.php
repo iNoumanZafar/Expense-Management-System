@@ -19,7 +19,7 @@
             </div>
 
             <div>
-                <a href="#" class="btn-white">Manage Users</a>
+                <a href="{{ route('admin.users.index') }}" class="btn-white">Manage Users</a>
             </div>
         </div>
 

@@ -1323,6 +1323,17 @@ body:has(.dash-wrap) .header-menu {
     margin-bottom: 8px;
 }
 
+/* Red text when spending is over the budget (bad) */
+.trend-bad {
+    font-weight: 600;
+    color: #dc2626;
+}
+
+/* Red budget bar when spending is over the budget */
+.progress-bar-over {
+    background: #dc2626;
+}
+
 /* Two columns: wide (left) + narrow (right) */
 .dash-grid {
     display: grid;
@@ -1578,3 +1589,422 @@ textarea.form-input {
 
 
 
+/* ===== Admin rooms + users ===== */
+/* Uses the dashboard and form styles above. Only the extra parts are here. */
+
+/* Search box + filter buttons above a list */
+.list-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.list-search {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.filter-tabs button {
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4b5563;
+    background-color: #f3f4f6;
+    transition: 0.2s;
+}
+
+.filter-tabs button:hover {
+    color: #4f46e5;
+}
+
+.filter-tabs button.active {
+    color: #ffffff;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+}
+
+/* Room cards: 1 column on phones, 2 on tablets, 3 on big screens */
+.room-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+@media (min-width: 640px) {
+    .room-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (min-width: 1536px) {
+    .room-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+.room-card {
+    padding: 18px;
+    border-radius: 14px;
+    border: 1px solid #eef2ff;
+    background-color: #fafaff;
+    transition: 0.3s;
+}
+
+.room-card:hover {
+    border-color: #c7d2fe;
+    box-shadow: 0 8px 20px rgba(49, 46, 129, 0.08);
+}
+
+.room-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.room-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* Small label: Full / Available / Empty */
+.room-status {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-full      { color: #b91c1c; background-color: #fee2e2; }
+.status-available { color: #15803d; background-color: #dcfce7; }
+.status-empty     { color: #4b5563; background-color: #f3f4f6; }
+
+.room-progress {
+    height: 6px;
+    margin-bottom: 14px;
+}
+
+/* One row per bed */
+.room-members li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 0;
+    font-size: 14px;
+    color: #374151;
+}
+
+.mini-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+}
+
+/* Empty bed: grey dashed circle */
+.room-members .bed-free {
+    color: #9ca3af;
+}
+
+.bed-free .mini-avatar {
+    color: #9ca3af;
+    background: none;
+    border: 1px dashed #d1d5db;
+}
+
+/* Users page: room dropdown + save button on each row */
+.assign-row {
+    flex-wrap: wrap;
+    align-items: center !important;
+}
+
+.assign-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.assign-select {
+    width: auto;
+    min-width: 180px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-size: 14px;
+}
+
+.btn-save-sm {
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    transition: 0.3s;
+}
+
+.btn-save-sm:hover {
+    opacity: 0.9;
+}
+
+/* On phones the dropdown goes under the name, full width */
+@media (max-width: 639px) {
+    .assign-form {
+        width: 100%;
+    }
+
+    .assign-select {
+        flex: 1;
+        min-width: 0;
+    }
+}
+
+/* Orange note about users without a room */
+.assign-warning {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    color: #9a3412;
+    background-color: #ffedd5;
+}
+
+
+
+/* ===== User: add expense ===== */
+/* Uses the dashboard and form styles above. Only the extra parts are here. */
+
+/* Two fields side by side (stacked on phones) */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0 16px;
+}
+
+@media (min-width: 640px) {
+    .form-row {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* "$" sign inside the left side of the amount box */
+.input-prefix {
+    position: relative;
+}
+
+.input-prefix span {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 15px;
+    font-weight: 500;
+    color: #9ca3af;
+    pointer-events: none;
+}
+
+.input-prefix .form-input {
+    padding-left: 30px;
+}
+
+/* "Available categories" heading + chips under the tips */
+.tips-heading {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding-top: 16px;
+    border-top: 1px solid #f3f4f6;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Small "Set / Change budget" form inside the Monthly budget card */
+.budget-box {
+    margin-top: 10px;
+}
+
+.budget-box summary {
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4f46e5;
+}
+
+.budget-box summary:hover {
+    color: #312e81;
+}
+
+.budget-form {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.budget-form .input-prefix {
+    flex: 1;
+}
+
+.budget-form .form-input {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.budget-btn {
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    transition: 0.3s;
+}
+
+.budget-btn:hover {
+    opacity: 0.9;
+}
+
+
+
+/* ===== User: all expenses ===== */
+/* Uses the dashboard styles above. Only the extra parts are here. */
+
+/* Lets the table scroll sideways on small screens */
+.table-wrap {
+    overflow-x: auto;
+}
+
+.expense-table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.expense-table th {
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6b7280;
+    background-color: #f9fafb;
+    border-bottom: 1px solid #eef2ff;
+}
+
+.expense-table td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: middle;
+}
+
+.expense-table tbody tr:hover {
+    background-color: #fafaff;
+}
+
+.expense-table .expense-title {
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.expense-table .text-right {
+    text-align: right;
+}
+
+/* Edit + Delete buttons in each row */
+.table-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: 0.2s;
+}
+
+.action-btn svg {
+    width: 15px;
+    height: 15px;
+}
+
+.action-edit {
+    color: #4f46e5;
+    background-color: #eef2ff;
+}
+
+.action-edit:hover {
+    color: #ffffff;
+    background-color: #4f46e5;
+}
+
+.action-delete {
+    color: #dc2626;
+    background-color: #fee2e2;
+}
+
+.action-delete:hover {
+    color: #ffffff;
+    background-color: #dc2626;
+}
+
+
+
+/* ===== User: edit expense ===== */
+
+/* Update button + Cancel link side by side */
+.form-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.form-actions .register-btn {
+    flex: 1;
+    margin-top: 0;
+}
+
+.btn-cancel {
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #4b5563;
+    background-color: #f3f4f6;
+    transition: 0.3s;
+}
+
+.btn-cancel:hover {
+    color: #1f2937;
+    background-color: #e5e7eb;
+}

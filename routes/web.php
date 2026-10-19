@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\User\ExpenseController;
+use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,9 +27,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // User-only routes
     Route::middleware('role:user')->prefix('user')->name('user.')->group(function () {
         // User Dashboard
-        Route::get('/dashboard', function () {
-            return view('user.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [UserDashboardController::class, 'index'])
+            ->name('dashboard');
+
+        // Save the user's own monthly budget (form on the dashboard)
+        Route::put('/budget', [UserDashboardController::class, 'updateBudget'])
+            ->name('budget.update');
+
+        // User Expenses
+        Route::get('/expenses', [ExpenseController::class, 'index'])
+            ->name('expenses.index');
+        Route::get('/expenses/create', [ExpenseController::class, 'create'])
+            ->name('expenses.create');
+        Route::post('/expenses', [ExpenseController::class, 'store'])
+            ->name('expenses.store');
+        Route::get('/expenses/{expense}/edit', [ExpenseController::class, 'edit'])
+            ->name('expenses.edit');
+        Route::put('/expenses/{expense}', [ExpenseController::class, 'update'])
+            ->name('expenses.update');
+        Route::delete('/expenses/{id}', [ExpenseController::class, 'destroy'])
+            ->name('expenses.destroy');
     });
 
     // Admin-only routes
@@ -50,6 +69,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('categories.index');
         Route::post('/categories', [CategoryController::class, 'store'])
             ->name('categories.store');
+
+        // Admin Rooms (UI only for now, sample data in the view)
+        Route::get('/rooms', function () {
+            return view('admin.rooms');
+        })->name('rooms.index');
+
+        // Admin Users: assign users to rooms (UI only for now, sample data in the view)
+        Route::get('/users', function () {
+            return view('admin.users');
+        })->name('users.index');
     });
 });
 

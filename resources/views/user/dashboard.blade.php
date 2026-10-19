@@ -1,50 +1,14 @@
 <x-app-layout>
 <div class="dash-wrap">
 
-    <!-- ===== Sidebar menu (left side) ===== -->
-    <aside class="dash-sidebar">
-        <p class="sidebar-heading">Menu</p>
-
-        <nav class="sidebar-menu">
-            <a href="{{ route('user.dashboard') }}" class="active">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-3a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1v-7z"/></svg>
-                Dashboard
-            </a>
-            <a href="#">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                Expenses
-            </a>
-            <a href="#">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 7h.01M7 3h5c.5 0 1 .2 1.4.6l7 7a2 2 0 010 2.8l-7 7a2 2 0 01-2.8 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/></svg>
-                Categories
-            </a>
-            <a href="#">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 7h6m0 10v-3m-3 3v-6m-3 6v-1m6-9a2 2 0 012 2v10a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2"/></svg>
-                Budget
-            </a>
-            <a href="#">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 3.1A9 9 0 1020.9 13H11V3.1z"/><path d="M20.5 9H15V3.5A9 9 0 0120.5 9z"/></svg>
-                Reports
-            </a>
-            <a href="{{ route('profile.edit') }}">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                Profile
-            </a>
-        </nav>
-
-        <!-- Small tip box at the bottom of the sidebar -->
-        <div class="sidebar-tip">
-            <p>Tip</p>
-            <small>Add your expenses every day to keep your budget on track.</small>
-        </div>
-    </aside>
+    @include('user.sidebar')
 
 
     <!-- ===== Page content (right side) ===== -->
     <div class="dash-page">
 
-        <!-- NOTE: all numbers on this page are sample data for the design.
-             They will come from the database in the next steps. -->
+        <!-- NOTE: "Spent this month" is real data. The other numbers are still
+             sample data and will come from the database in the next steps. -->
 
         <!-- ===== Welcome banner ===== -->
         <div class="dash-welcome">
@@ -55,9 +19,18 @@
             </div>
 
             <div class="dash-welcome-actions">
-                <a href="#" class="btn-white">+ Add Expense</a>
+                <a href="{{ route('user.expenses.create') }}" class="btn-white">+ Add Expense</a>
             </div>
         </div>
+
+
+        <!-- ===== Green message after saving ===== -->
+        @if (session('success'))
+            <div class="dash-alert">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                {{ session('success') }}
+            </div>
+        @endif
 
 
         <!-- ===== Stat cards ===== -->
@@ -71,8 +44,9 @@
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     </span>
                 </div>
-                <p class="stat-value">$1,248.50</p>
-                <p class="stat-note"><span class="trend-good">&#9660; 12%</span> vs last month</p>
+                {{-- $spentThisMonth comes from User\DashboardController --}}
+                <p class="stat-value">${{ number_format($spentThisMonth, 2) }}</p>
+                <p class="stat-note">{{ now()->format('F Y') }}</p>
             </div>
 
             <!-- Card 2: Monthly budget -->
@@ -83,8 +57,38 @@
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 7h6m0 10v-3m-3 3v-6m-3 6v-1m6-9a2 2 0 012 2v10a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2"/></svg>
                     </span>
                 </div>
-                <p class="stat-value">$2,000.00</p>
-                <p class="stat-note">Set for October</p>
+                {{-- The budget is saved on the logged-in user (users.monthly_budget) --}}
+                @if (Auth::user()->monthly_budget !== null)
+                    <p class="stat-value">${{ number_format(Auth::user()->monthly_budget, 2) }}</p>
+                    <p class="stat-note">Set for {{ now()->format('F Y') }}</p>
+                @else
+                    <p class="stat-value">Not set</p>
+                    <p class="stat-note">Add your budget below</p>
+                @endif
+
+                {{-- <details> opens and closes on click without any JavaScript.
+                     It is open when no budget is set yet, or when the form has an error. --}}
+                <details class="budget-box" @if (Auth::user()->monthly_budget === null || $errors->has('monthly_budget')) open @endif>
+                    <summary>{{ Auth::user()->monthly_budget !== null ? 'Change budget' : 'Set budget' }}</summary>
+
+                    <form method="POST" action="{{ route('user.budget.update') }}" class="budget-form">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="input-prefix">
+                            <span>$</span>
+                            <input type="number" name="monthly_budget"
+                                   value="{{ old('monthly_budget', Auth::user()->monthly_budget) }}"
+                                   placeholder="2000" required min="0" step="0.01"
+                                   class="form-input @error('monthly_budget') is-invalid @enderror">
+                        </div>
+                        <button type="submit" class="budget-btn">Save</button>
+                    </form>
+
+                    @error('monthly_budget')
+                        <p class="form-error">{{ $message }}</p>
+                    @enderror
+                </details>
             </div>
 
             <!-- Card 3: Remaining -->
@@ -95,13 +99,30 @@
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                     </span>
                 </div>
-                <p class="stat-value">$751.50</p>
+                {{-- $remaining and $percentUsed come from User\DashboardController --}}
+                @if ($remaining === null)
+                    {{-- No budget yet, so there is nothing to subtract from --}}
+                    <p class="stat-value">-</p>
+                    <p class="stat-note">Set a budget to see what is left</p>
+                @else
+                    @if ($remaining >= 0)
+                        <p class="stat-value">${{ number_format($remaining, 2) }}</p>
+                    @else
+                        <p class="stat-value trend-bad">-${{ number_format(abs($remaining), 2) }}</p>
+                    @endif
 
-                <!-- Small budget bar -->
-                <div class="progress stat-progress">
-                    <div class="progress-bar" style="width: 62%"></div>
-                </div>
-                <p class="stat-note">62% of budget used</p>
+                    <!-- Small budget bar (never wider than 100%, red when over budget) -->
+                    <div class="progress stat-progress">
+                        <div class="progress-bar @if ($percentUsed > 100) progress-bar-over @endif"
+                             style="width: {{ min($percentUsed, 100) }}%"></div>
+                    </div>
+
+                    @if ($remaining >= 0)
+                        <p class="stat-note">{{ $percentUsed }}% of budget used</p>
+                    @else
+                        <p class="stat-note"><span class="trend-bad">Over budget</span> ({{ $percentUsed }}% used)</p>
+                    @endif
+                @endif
             </div>
 
             <!-- Card 4: Spent today -->
@@ -112,8 +133,9 @@
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     </span>
                 </div>
-                <p class="stat-value">$84.20</p>
-                <p class="stat-note">2 expenses today</p>
+                {{-- $todayExpenses comes from User\DashboardController --}}
+                <p class="stat-value">${{ number_format($todayExpenses->sum('amount'), 2) }}</p>
+                <p class="stat-note">{{ count($todayExpenses) }} {{ Str::plural('expense', count($todayExpenses)) }} today</p>
             </div>
 
         </div>
@@ -161,7 +183,7 @@
             <div class="dash-card">
                 <div class="dash-card-head">
                     <h2>Recent expenses</h2>
-                    <a href="#" class="dash-link">View all &rarr;</a>
+                    <a href="{{ route('user.expenses.index') }}" class="dash-link">View all &rarr;</a>
                 </div>
 
                 <ul class="expense-list">

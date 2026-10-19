@@ -7,27 +7,30 @@ use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Seed the users table with 30 users.
-     *
-     * Every user's password is: password
-     */
     public function run(): void
     {
-        // Fixed accounts, so you always know one admin and one user login
-        User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@example.com',
-            'user_type' => 'admin',
-        ]);
+        // Create the Admin only if it does not already exist
+        User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Admin',
+                'password' => 'password',
+                'user_type' => 'admin',
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'user@example.com',
-            'user_type' => 'user',
-        ]);
+        // Create the Test User only if it does not already exist
+        User::firstOrCreate(
+            ['email' => 'user@example.com'],
+            [
+                'name' => 'Test User',
+                'password' => 'password',
+                'user_type' => 'user',
+            ]
+        );
 
-        // 28 random users with a random user type and join date
+        // Create 28 random users only if you still need them.
+        // Remove this block if you have already created your 28 test users.
         User::factory(28)
             ->state(function () {
                 $joinedAt = fake()->dateTimeBetween('-6 months', 'now');
@@ -39,5 +42,18 @@ class UserSeeder extends Seeder
                 ];
             })
             ->create();
+
+        // Allocate a random monthly budget to every user
+        // who does not already have one.
+        User::whereNull('monthly_budget')
+            ->each(function (User $user) {
+                $user->update([
+                    'monthly_budget' => fake()->randomFloat(
+                        2,
+                        10000,
+                        100000
+                    ),
+                ]);
+            });
     }
 }
