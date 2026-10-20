@@ -37,50 +37,76 @@ const tooltip = {
 
 
 /* ===== User dashboard ===== */
-/* NOTE: the numbers below are sample data for the design.
-   They will come from the database in the next steps. */
 
 // ----- Daily spending (columns) -----
+// Real data: the labels and values come from the data-labels and
+// data-values attributes on the <canvas> (set in dashboard.blade.php)
 const dailyChart = document.getElementById('dailyChart');
 
 if (dailyChart) {
+    const labels = JSON.parse(dailyChart.dataset.labels);
+    const values = JSON.parse(dailyChart.dataset.values);
+
     new Chart(dailyChart, {
         type: 'bar',
+
         data: {
-            labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'],
+            labels: labels,
             datasets: [{
-                data: [45, 120, 30, 0, 85, 160, 40, 75, 20, 28.75, 62.5, 120, 45, 84.2],
+                data: values,
                 backgroundColor: indigo,
                 hoverBackgroundColor: '#312e81',
                 borderRadius: 4,
-                borderSkipped: 'start',   // round only the top, flat at the bottom
+                borderSkipped: 'start',
                 maxBarThickness: 24
             }]
         },
+
         options: {
             maintainAspectRatio: false,
+
             plugins: {
-                legend: { display: false },
+                legend: {
+                    display: false
+                },
+
                 tooltip: {
                     ...tooltip,
+
                     callbacks: {
-                        title: function (items) { return 'October ' + items[0].label; },
-                        label: function (context) { return money(context.raw); }
+                        title: function (items) {
+                            return 'Day ' + items[0].label;
+                        },
+
+                        label: function (context) {
+                            return money(context.raw);
+                        }
                     }
                 }
             },
+
             scales: {
-                x: { grid: { display: false }, border: { color: axisColor } },
+                x: {
+                    grid: { display: false },
+                    border: { color: axisColor }
+                },
+
                 y: {
                     beginAtZero: true,
                     grid: { color: gridColor },
                     border: { display: false },
-                    ticks: { callback: money, maxTicksLimit: 5 }
+                    ticks: {
+                        callback: money,
+                        maxTicksLimit: 5
+                    }
                 }
             }
         }
     });
 }
+
+/* NOTE: the two charts below are still sample data.
+   They will come from the database in the next steps. */
 
 // ----- Spending by category (horizontal bars) -----
 const categoryChart = document.getElementById('categoryChart');

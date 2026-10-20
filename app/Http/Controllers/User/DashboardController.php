@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Expense;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -33,12 +34,33 @@ class DashboardController extends Controller
         $todayExpenses = Expense::where('user_id', auth()->id())
             ->whereDate('expense_date', today())
             ->get();
+        $start = Carbon::now()->startOfMonth();
+        $daysInMonth = Carbon::now()->daysInMonth;
 
+          // Get total expenses for each day
+        $expenses = Expense::where('user_id', auth()->id())
+            ->whereBetween('expense_date', [
+                $start->toDateString(),
+                Carbon::now()->toDateString(),
+            ])
+            ->selectRaw('DAY(expense_date) as day, SUM(amount) as total')
+            ->groupBy('day')
+            ->pluck('total', 'day');
+
+         // Prepare chart data
+        $dailySpendingLabels = range(1, $daysInMonth);
+        $dailySpendingData = [];
+
+        foreach ($dailySpendingLabels as $day) {
+            $dailySpendingData[] = (float) ($expenses[$day] ?? 0);
+        }
         return view('user.dashboard', [
             'spentThisMonth' => $spentThisMonth,
             'remaining' => $remaining,
             'percentUsed' => $percentUsed,
             'todayExpenses' => $todayExpenses,
+            'dailySpendingLabels' => $dailySpendingLabels,
+            'dailySpendingData' => $dailySpendingData,
         ]);
     }
 

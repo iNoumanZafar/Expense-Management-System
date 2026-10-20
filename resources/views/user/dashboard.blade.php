@@ -149,13 +149,16 @@
                 <div class="dash-card-head">
                     <div>
                         <h2>Daily spending</h2>
-                        <p class="dash-muted">October 1 &ndash; 14</p>
+                        <p class="dash-muted">{{ now()->format('F') }} 1 &ndash; {{ now()->day }}</p>
                     </div>
-                    <span class="dash-badge">Avg $89 / day</span>
+                    {{-- Average per day so far: divide by today's day number (never 0) --}}
+                    <span class="dash-badge">Avg ${{ number_format($spentThisMonth / now()->day, 0) }} / day</span>
                 </div>
 
                 <div class="chart-box chart-tall">
-                    <canvas id="dailyChart" role="img" aria-label="Column chart of daily spending for October 1 to 14"></canvas>
+                    <canvas id="dailyChart" role="img" aria-label="Column chart of daily spending for {{ now()->format('F Y') }}"
+                        data-labels='@json($dailySpendingLabels)'
+                        data-values='@json($dailySpendingData)'></canvas>
                 </div>
             </div>
 
